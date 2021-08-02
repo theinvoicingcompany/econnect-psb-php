@@ -1,0 +1,34 @@
+{
+    "name": "everbinding/econnect-psb-php",
+    "description": "PHP example implementation for using the Procurement Service Bus.",
+    "keywords": [
+        "econnect",
+		"psb",
+		"peppol"
+    ],
+    "homepage": "https://psb.econnect.eu",
+    "license": "unlicense",
+    "authors": [
+        {
+            "name": "eConnect International B.V.",
+            "homepage": "https://econnect.eu"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0 || ^9.0",
+        "friendsofphp/php-cs-fixer": "^2.12"
+    },
+    "autoload": {
+        "psr-4": { "EConnect\\Psb\\" : "lib/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "EConnect\\Psb\\Test\\" : "test/" }
+    }
+}
