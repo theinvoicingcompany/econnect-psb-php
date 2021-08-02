@@ -100,7 +100,7 @@ $token = $oidc->requestResourceOwnerToken(TRUE)->access_token;
 
 ## Read more
 
-If you want to know more about Peppol e-invoicing or other procurement network the go to the [`Procurement Service Bus introduction page`][5].
+If you want to know more about Peppol e-procurement or other procurement network the go to the [`Procurement Service Bus introduction page`][5].
 
 [0]: https://getcomposer.org/
 [1]: ./Example.php
