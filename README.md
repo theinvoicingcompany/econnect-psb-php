@@ -1,6 +1,6 @@
 # PHP Client
 
-A reference implementation meant as an example how to use the PSB api using the PHP.
+A reference implementation meant as an example how to use the PSB api using PHP.
 
 ## Requirements
 
@@ -29,7 +29,7 @@ $config
     ->setUsername("{username}")
     ->setPassword("{password}");
     ->setClientId("{clientId}")
-    ->setClientSecret("{secret}")
+    ->setClientSecret("{clientSecret}")
     ->setHost("https://psb.econnect.eu")
     ->setApiKey('Subscription-Key', '{subscription key}');
 ```
@@ -48,7 +48,7 @@ $authN->login();
 ## Use api
 
 Use the api using the default configuration after a successful login.
-In this example we are calling the send sales invoice api. The user must have send permission on the provide sender partyId. Also make sure the UBL is valid, otherwise it will be block for sending. The receiver partyId is optional, the PSB will use the best possible route we no receiver partyId is provided.
+In this example we are calling the send sales invoice api. The user must have send permission on the provide sender [`partyId`][7]. Also make sure the UBL is valid, otherwise it will be block for sending. The receiver [`partyId`][7] is optional, the PSB will use the best possible route we no receiver partyId is provided.
 
 ```php
 $config = \EConnect\Psb\Configuration::getDefaultConfiguration();
@@ -67,8 +67,8 @@ $salesInvoiceApi->sendSalesInvoice($yourPartyId, $filePath, $receiverPartyId);
 
 ## Example client
 
-There is a [`simple example php client`][1] that you can run on a php webserver. With the example you can send an invoice via Peppol.
-Also there is a [`webhook receiver example`][2] that you need to have in order to receive invoice from Peppol.
+There is a [`simple example php client`][1] that you can run on a php webserver. With the example you can [`send an invoice via Peppol`][8].
+Also there is a [`webhook receiver example`][2] that you need to have in order to [`receive invoices from Peppol`][9].
 
 ## Build your own source
 
@@ -85,8 +85,8 @@ You can also copy the code from: [`Authentication.php`][5]
 use Jumbojett\OpenIDConnectClient;
 
 $oidc = new OpenIDConnectClient('https://identity.econnect.eu',
-                                'ClientIDHere',
-                                'ClientSecretHere');
+                                '{clientId}',
+                                '{clientSecret}');
 
 $oidc->addScope('ap');
 
@@ -109,3 +109,6 @@ If you want to know more about Peppol e-procurement or other procurement network
 [4]: https://github.com/jumbojett/OpenID-Connect-PHP#example-5-request-resource-owners-token-with-client-auth
 [5]: ./lib/Authentication.php
 [6]: https://psb.econnect.eu/introduction/overview.html
+[7]: https://psb.econnect.eu/misc/partyIds.html
+[8]: https://psb.econnect.eu/introduction/sendInvoice.html
+[9]: https://psb.econnect.eu/introduction/receiveInvoice.html
