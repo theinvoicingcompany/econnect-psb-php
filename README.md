@@ -105,7 +105,7 @@ If you want to know more about Peppol e-procurement or other procurement network
 
 [0]: https://getcomposer.org/
 [1]: ./ExampleSendInvoice.php
-[2]: ./ExampleWebhookReceiver
+[2]: ./ExampleWebhookReceiver.php
 [3]: https://github.com/OpenAPITools/openapi-generator-cli
 [4]: https://github.com/jumbojett/OpenID-Connect-PHP#example-5-request-resource-owners-token-with-client-auth
 [5]: ./lib/Authentication.php
