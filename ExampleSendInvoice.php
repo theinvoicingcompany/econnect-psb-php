@@ -11,7 +11,7 @@ $config
     ->setClientId("2210f77eed3a4ab2")
     ->setClientSecret("ddded83702534a6c9cadde3d1bf3e94a")
     ->setHost("https://accp-psb.econnect.eu")
-    ->setApiKey('Subscription-Key', 'Sandbox.Accp.W2NmWFRINXokdA');;
+    ->setApiKey('Subscription-Key', 'Sandbox.Accp.W2NmWFRINXokdA');
 
 $meApi = new EConnect\Psb\Api\MeApi(
     $httpClient,

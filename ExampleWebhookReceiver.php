@@ -6,25 +6,33 @@ $expectedHash = hash_hmac('sha256', $payload, "secretKey");
 
 if (empty($_SERVER["HTTP_X_ECONNECT_SIGNATURE"]) || $_SERVER["HTTP_X_ECONNECT_SIGNATURE"] != "sha256=" . $expectedHash) {
     header("HTTP/1.1 403 Forbidden");
-    die("Forbidden");
+    die("Forbidden (Signature invalid)");
 }
 
 
 $webhook = json_decode($payload);
 
-// The topic could also be an InvoiceSent, in case the invoice is successfully sent. 
-// This example only focusses on receiving invoices.
 if ($webhook->topic != "InvoiceReceived") {
     header("HTTP/1.1 501 Not Implemented");
-    die("Not Implemented");
+    die("Not Implemented (Topic not supported)");
 }
 
-$sentDate = DateTime::createFromFormat(\DateTime::ATOM, strtotime($webhook->sentOn));
-$sentDate->add(new \DateInterval('PT300S'));
+$sentDate = new \DateTime($webhook->sentOn);
 
-if ($sentDate < new \DateTime()) {
+$minDate = new \DateTime();
+$minDate->sub(new \DateInterval('PT300S'));
+
+$maxDate = new \DateTime();
+$maxDate->add(new \DateInterval('PT300S'));
+
+if ($sentDate < $minDate) {
     header("HTTP/1.1 400 Bad Request");
-    die("Bad Request");
+    die("Bad Request (Too old ".$sentDate->format('c')." < ".$minDate->format('c').")");
+}
+
+if ($sentDate > $maxDate) {
+    header("HTTP/1.1 400 Bad Request");
+    die("Bad Request (Too new ".$sentDate->format('c')." > ".$maxDate->format('c').")");
 }
 
 $httpClient = new GuzzleHttp\Client();
@@ -32,12 +40,12 @@ $httpClient = new GuzzleHttp\Client();
 $config = \EConnect\Psb\Configuration::getDefaultConfiguration();
 
 $config
-    ->setUsername("eConnectUser")
-    ->setPassword("eConnect#!12")
-    ->setClientId("2210f77eed3a4ab2")
-    ->setClientSecret("ddded83702534a6c9cadde3d1bf3e94a")
-    ->setHost("https://accp-psb.econnect.eu")
-    ->setApiKey('Subscription-Key', 'eConnectInternalApaasSubscription');;
+    ->setUsername("{username}")
+    ->setPassword("{password}")
+    ->setClientId("2210f77eed3a4ab2") // For testing only
+    ->setClientSecret("ddded83702534a6c9cadde3d1bf3e94a") // For testing only
+    ->setHost("https://accp-psb.econnect.eu") // For testing only
+    ->setApiKey('Subscription-Key', 'Sandbox.Accp.W2NmWFRINXokdA'); // For testing only
 
 $purchaseInvoiceApi = new EConnect\Psb\Api\PurchaseInvoiceApi(
     $httpClient,
@@ -47,8 +55,10 @@ $purchaseInvoiceApi = new EConnect\Psb\Api\PurchaseInvoiceApi(
 $authn = new \EConnect\Psb\Authentication($config);
 $token = $authn->login();
 
+// Download as NLCUIS and print file
+$format = "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2::Invoice##urn:cen.eu:en16931:2017#compliant#urn:fdc:nen.nl:nlcius:v1.0::2.1";
 header('Content-Type: application/xml; charset=utf-8');
-$file = $purchaseInvoiceApi->downloadPurchaseInvoice($webhook->partyId, $webhook->documentId, null);
+$file = $purchaseInvoiceApi->downloadPurchaseInvoice($webhook->partyId, $webhook->documentId, $format);
 
 while (!$file->eof()) {
     echo $file->fgets();

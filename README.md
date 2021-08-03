@@ -26,13 +26,12 @@ require __DIR__ . '/vendor/autoload.php';
 $config = \EConnect\Psb\Configuration::getDefaultConfiguration();
 
 $config
-    ->setUsername("username")
-    ->setPassword("password");
-    ->setClientId("clientId")
-    ->setClientSecret("secret")
+    ->setUsername("{username}")
+    ->setPassword("{password}");
+    ->setClientId("{clientId}")
+    ->setClientSecret("{secret}")
     ->setHost("https://psb.econnect.eu")
-    ->setApiKey('Subscription-Key', 'subscription key');;
-
+    ->setApiKey('Subscription-Key', '{subscription key}');
 ```
 
 ## Login
@@ -71,7 +70,7 @@ $salesInvoiceApi->sendSalesInvoice($yourPartyId, $filePath, $receiverPartyId);
 There is a [`simple example php client`][1] that you can run on a php webserver. With the example you can send an invoice via Peppol.
 Also there is a [`webhook receiver example`][2] that you need to have in order to receive invoice from Peppol.
 
-## Build you own source
+## Build your own source
 
 Instead of using this code, you could also generate the php code yourself using the [`openapi-generator-cli`][3].
 
@@ -91,11 +90,11 @@ $oidc = new OpenIDConnectClient('https://identity.econnect.eu',
 
 $oidc->addScope('ap');
 
-//Add username and password
-$oidc->addAuthParam(array('username'=>'<Username>'));
-$oidc->addAuthParam(array('password'=>'<Password>'));
+// Add username and password
+$oidc->addAuthParam(array('username'=>'{username}'));
+$oidc->addAuthParam(array('password'=>'{password}'));
 
-//Perform the auth and return the token (to validate check if the access_token property is there and a valid JWT) :
+// to validate the JWT and whether the acces_token property is present
 $token = $oidc->requestResourceOwnerToken(TRUE)->access_token;
 ```
 
