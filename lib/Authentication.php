@@ -36,6 +36,10 @@ class Authentication
 
         $loginResponse = $this->oidc->requestResourceOwnerToken(TRUE);
         
+        if (empty($loginResponse->expires_in)) {
+            throw new \Exception('PSB login failed.');
+        }
+
         $date = new \DateTime();
         $date->add(new \DateInterval('PT' . $loginResponse->expires_in . 'S'));
 

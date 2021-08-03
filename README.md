@@ -59,27 +59,28 @@ $salesInvoiceApi = new EConnect\Psb\Api\SalesInvoiceApi(
     $config
 );
 
-$senderPartyId = "senderPartyId";
+$yourPartyId = "senderPartyId";
 $filePath = "./Ubl.xml";
 $receiverPartyId = null;
 
-$salesInvoiceApi->sendSalesInvoice($senderPartyId, $filePath, $receiverPartyId);
+$salesInvoiceApi->sendSalesInvoice($yourPartyId, $filePath, $receiverPartyId);
 ```
 
 ## Example client
 
-There is a [`simple example php client`][1] that you can run on a php webserver.
+There is a [`simple example php client`][1] that you can run on a php webserver. With the example you can send an invoice via Peppol.
+Also there is a [`webhook receiver example`][2] that you need to have in order to receive invoice from Peppol.
 
 ## Build you own source
 
-Instead of using this code, you could also generate the php code yourself using the [`openapi-generator-cli`][2].
+Instead of using this code, you could also generate the php code yourself using the [`openapi-generator-cli`][3].
 
 ```sh
 openapi-generator-cli generate -g php -i https://psb.econnect.eu/v1/swagger.json?subscriptionKey={your-subscription} -o C:\temp --additional-properties=invokerPackage=EConnect\Psb
 ```
 
-And use [`Jumbojett\OpenIDConnectClient`][3] to get the access token.
-You can also copy the code from: [`Authentication.php`][4]
+And use [`Jumbojett\OpenIDConnectClient`][4] to get the access token.
+You can also copy the code from: [`Authentication.php`][5]
 
 ```php
 use Jumbojett\OpenIDConnectClient;
@@ -100,11 +101,12 @@ $token = $oidc->requestResourceOwnerToken(TRUE)->access_token;
 
 ## Read more
 
-If you want to know more about Peppol e-procurement or other procurement network the go to the [`Procurement Service Bus introduction page`][5].
+If you want to know more about Peppol e-procurement or other procurement network the go to the [`Procurement Service Bus introduction page`][6].
 
 [0]: https://getcomposer.org/
-[1]: ./Example.php
-[2]: https://github.com/OpenAPITools/openapi-generator-cli
-[3]: https://github.com/jumbojett/OpenID-Connect-PHP#example-5-request-resource-owners-token-with-client-auth
-[4]: ./lib/Authentication.php
-[5]: https://psb.econnect.eu/introduction/overview.html
+[1]: ./ExampleSendInvoice.php
+[2]: ./ExampleWebhookReceiver
+[3]: https://github.com/OpenAPITools/openapi-generator-cli
+[4]: https://github.com/jumbojett/OpenID-Connect-PHP#example-5-request-resource-owners-token-with-client-auth
+[5]: ./lib/Authentication.php
+[6]: https://psb.econnect.eu/introduction/overview.html
