@@ -36,6 +36,12 @@ $salesInvoiceApi = new EConnect\Psb\Api\SalesInvoiceApi(
 
 <head>
     <title>Example EConnect PSB</title>
+    <style>
+        label {
+            font-weight: bold;
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
@@ -53,6 +59,7 @@ $salesInvoiceApi = new EConnect\Psb\Api\SalesInvoiceApi(
                 </p>
                 <button>Login</button>
             </form>
+			<a href="https://psb.econnect.eu/introduction/gettingStarted.html#step-1-get-access">Getting started</a>
         <?php } else {
             $config
                 ->setUsername(urldecode($_GET["username"]))
@@ -60,42 +67,66 @@ $salesInvoiceApi = new EConnect\Psb\Api\SalesInvoiceApi(
 
             $token = $authn->login();
             $userResponse = $meApi->getUser();
+
+            $senderPartyId = isset($_POST['senderPartyId']) ? $_POST['senderPartyId'] : "";
+            $receiverPartyId = isset($_POST['receiverPartyId']) ? $_POST['receiverPartyId'] : "";
         ?>
 
             Hello <?php echo $userResponse["name"]; ?> your access token is
             <pre><?php echo $token; ?></pre>
 
-            <h1>Send example</h1>
+            <h1>Send invoice example</h1>
+            <h2>Query recipient</h2>
+            <p>Use the <a href="https://psb.econnect.eu/endpoints/v1/salesInvoice.html#query-recipient">"Query recipient"</a> to make sure the partyId can receive your invoice.</p>
             <form method="POST" enctype="multipart/form-data">
                 <p>
-                    <label>sender partyId:</label>
-                    <input type="text" name="senderPartyId" value="NL:KVK:econnectts" />
+                    <label>Your partyId:</label>
+                    <input type="text" name="senderPartyId" value="<?php echo $senderPartyId; ?>" />
                 </p>
                 <p>
                     <label>Receiver partyId:</label>
-                    <input type="text" name="receiverPartyId" value="NL:KVK:econnectts" />
+                    <input type="text" name="receiverPartyId" value="<?php echo $receiverPartyId; ?>" />
                 </p>
-                <button value="preflight" name="submit">Preflight</button>
+                <button value="queryRecipient" name="queryRecipient">Query recipient</button>
+            </form>
 
+            <h3>Query recipient response</h3>
+            <p>Use this partyId as the receiverId in the next send call or in your UBL as AccountingCustomerParty/EndpointID.</p>
+
+            <?php
+            if (isset($_POST['queryRecipient'])) {
+                echo "<pre>" . $salesInvoiceApi->queryRecipientPartyForSalesInvoice($_POST['senderPartyId'], array($_POST['receiverPartyId']), null) . "</pre>";
+            } ?>
+
+            <h2>Send</h2>
+            <p>Use the <a href="https://psb.econnect.eu/endpoints/v1/salesInvoice.html#send">"Send"</a> api to upload your invoice.</p>
+            <form method="POST" enctype="multipart/form-data">
+                <p>
+                    <label>Your partyId:</label>
+                    <input type="text" name="senderPartyId" value="<?php echo $senderPartyId; ?>" />
+                </p>
+                <p>
+                    <label>Optional receiver partyId:</label>
+                    <input type="text" name="receiverPartyId" value="<?php echo $receiverPartyId; ?>" />
+                </p>
                 <p>
                     <label>Business document (e.g. Ubl):</label>
                     <input type="file" name="file" id="file" />
                 </p>
-                <button value="send" name="submit">Send</button>
+                <button value="send" name="send">Send</button>
             </form>
+            <h3>Send response</h3>
+            <p>An Id will be returned When you request is accepted, please store this Id, since it is your trace and trace id.</p>
 
-            <pre>
             <?php
-            $submit = isset($_POST['submit']) ? $_POST['submit'] : '';
-            switch ($submit) {
-                case "preflight":
-                    echo $salesInvoiceApi->queryRecipientPartyForSalesInvoice($_POST['senderPartyId'], array($_POST['receiverPartyId']), null);
-                    break;
-                case "send":
-                    echo $salesInvoiceApi->sendSalesInvoice($_POST['senderPartyId'], $_FILES['file']['tmp_name'], $_POST['receiverPartyId']);
-                    break;
+            if (isset($_POST['send'])) {
+                echo "<pre>" . $salesInvoiceApi->sendSalesInvoice($_POST['senderPartyId'], $_FILES['file']['tmp_name'], $_POST['receiverPartyId']) . "</pre>";
             } ?>
-            </pre>
+
+            <h3>Receive status update</h3>
+            <p>You need to <a href="https://psb.econnect.eu/endpoints/v1/hook.html#configure-your-webhook">register webhooks</a> using the topic "InvoiceSent" in order to known if your send was successful.
+                There is an example webhook receiver attached to this project, please inspect the contents of: WebhookReceiver.php.
+            </p>
         <?php } ?>
     </div>
 </body>
