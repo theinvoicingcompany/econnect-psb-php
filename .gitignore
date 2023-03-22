@@ -12,3 +12,7 @@ composer.phar
 
 # PHPUnit cache
 .phpunit.result.cache
+
+/.idea/
+/tools/vendor/
+/tools/composer.*

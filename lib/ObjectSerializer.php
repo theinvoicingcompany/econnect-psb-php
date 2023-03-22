@@ -138,7 +138,7 @@ class ObjectSerializer
      *
      * @return string the serialized object
      */
-    public static function toPathValue($value)
+    public static function toPathValue($value): string
     {
         return rawurlencode(self::toString($value));
     }

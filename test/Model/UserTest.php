@@ -29,6 +29,8 @@
 
 namespace EConnect\Psb\Test\Model;
 
+use EConnect\Psb\Model\ModelInterface;
+use EConnect\Psb\Model\User;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -43,6 +45,8 @@ use PHPUnit\Framework\TestCase;
 class UserTest extends TestCase
 {
 
+    protected ModelInterface $sut;
+
     /**
      * Setup before running any test case
      */
@@ -55,6 +59,7 @@ class UserTest extends TestCase
      */
     public function setUp(): void
     {
+        $this->sut = new User();
     }
 
     /**
